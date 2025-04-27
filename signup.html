@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WeatherWise - Sign Up</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to bottom, #89BCE5, #D0E3FA);
+    }
+
+    .signup-container {
+      background: linear-gradient(to bottom, #89BCE5, #D0E3FA);
+      padding: 5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 450px;
+      text-align: center;
+    }
+
+    .signup-container h2 {
+      margin-bottom: 1.5rem;
+      color:  #0c45f1;
+    }
+
+    .input-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .signup-container input {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    .eye-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #555;
+    }
+
+    .signup-container button {
+      width: 100%;
+      padding: 0.8rem;
+      background:  #0c45f1;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+
+    .signup-container button:hover {
+      background:#2b80ff;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    .login-link {
+      margin-top: 1rem;
+      color: #0c45f1;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .login-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+      <input type="text" name="username" placeholder="Username" required />
+      <input type="email" name="email" placeholder="Email" required />
+      
+      <div class="input-container">
+        <input type="password" name="password" id="password" placeholder="Password" required />
+        <span class="eye-icon" onclick="togglePasswordVisibility('password', this)">👁️</span>
+      </div>
+
+      <div class="input-container">
+        <input type="password" name="confirm_password" id="confirmPassword" placeholder="Confirm Password" required />
+        <span class="eye-icon" onclick="togglePasswordVisibility('confirmPassword', this)">👁️</span>
+      </div>
+
+      <button type="submit">Sign Up</button>
+      <p class="error-message" id="error-message"></p>
+      <p class="login-text">Already have an account? <a href="/login" class="login-link">Login</a></p>
+    </form>
+  </div>
+
+  <script>
+    function togglePasswordVisibility(inputId, icon) {
+      const input = document.getElementById(inputId);
+      if (input.type === "password") {
+        input.type = "text";
+        icon.innerHTML = "🙈"; // Change to eye closed
+      } else {
+        input.type = "password";
+        icon.innerHTML = "👁️"; // Change to eye open
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("signupForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+
+            try {
+                const response = await fetch("/signup", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("Signup successful!");
+                    window.location.href = data.redirect || "/homepage"; // Ensure valid redirect
+                } else {
+                    document.getElementById("error-message").innerText = data.detail;
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById("error-message").innerText = "Something went wrong. Please try again.";
+            }
+        });
+    });
+  </script>
+</body>
+</html>

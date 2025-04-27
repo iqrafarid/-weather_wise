@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WeatherWise</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background: linear-gradient(to bottom, #D0E3FA, #89BCE5); 
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .content {
+      flex: 1;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #009DFF;
+      color: white;
+      padding: 1rem 2rem;
+      position: relative;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .search-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .search-bar input {
+      padding: 0.5rem;
+      width: 700px;
+      border-radius: 4px;
+      border: none;
+      outline: none;
+      background: linear-gradient(to bottom, #D0E3FA, #89BCE5);
+      color: #333;
+      font-size: 1rem;
+      padding-left: 10px;
+    }
+
+    .search-bar {
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      pointer-events: none;
+    }
+
+    .settings-icon {
+      font-size: 1.5rem;
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+    }
+
+    .settings-icon:hover {
+      color: #cce6ff;
+    }
+
+    .current-weather {
+      text-align: center;
+      background-color: linear-gradient(to bottom, #D0E3FA, #89BCE5);
+      padding: 2rem 1rem;
+      margin: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .current-weather h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .current-weather h2 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .current-weather p {
+      font-size: 1.2rem;
+      margin: 0.5rem 0;
+    }
+
+    .weather-details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+    }
+
+    .weather-detail {
+      text-align: left;
+      padding: 0.5rem;
+    }
+
+    .weather-detail-label {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .weather-detail-value {
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 5rem 0 3rem;
+    }
+
+    .button {
+      background: #009DFF;
+      color: white;
+      padding: 2rem 10rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .button:hover {
+      background: #3D7EF3;
+      transform: scale(1.05);
+    }
+
+    .weekly-forecast {
+      text-align: center;
+      margin: 4rem 0 2rem;
+    }
+
+    .forecast-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      flex-wrap: wrap;
+    }
+
+    .forecast-buttons button {
+      background: #009DFF;
+      color: white;
+      padding: 2.8rem 2.9rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
+      min-width: 220px;
+      line-height: 1.5;
+    }
+
+    .forecast-buttons button:hover {
+      background: #3D7EF3;
+    }
+
+    .weather-details {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      opacity: 0.9;
+    }
+
+    .temperature {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin: 0.3rem 0;
+    }
+
+    .weather-description {
+      text-transform: capitalize;
+      margin: 0.3rem 0;
+    }
+
+    .outfit-recommendations {
+      background-color: white;
+      padding: 2rem;
+      margin: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .outfit-recommendations h2 {
+      color: #009DFF;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    .outfit-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .outfit-item {
+      background-color: #f8f9fa;
+      margin: 0.5rem 0;
+      padding: 1rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+    }
+
+    .outfit-item i {
+      margin-right: 1rem;
+      color: #009DFF;
+    }
+
+    .weather-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">WeatherWise</div>
+    <div class="search-container">
+      <form class="search-bar" onsubmit="handleSearch(event)">
+        <input type="text" id="searchInput" name="query" placeholder="Search location...">
+        <span class="search-icon">🔍</span>
+      </form>
+    </div>
+    <span class="settings-icon" onclick="openSettings()">⚙️</span>
+  </header>
+
+  <div class="content">
+    <section class="current-weather">
+      <h1 id="city-name">Loading...</h1>
+      <h2 id="temperature">--°C</h2>
+      <p id="description">Fetching weather...</p>
+      <p id="humidity">Humidity: --%</p>
+      <p id="wind-speed">Wind: -- m/s</p>
+      <p id="pressure">Pressure: -- hPa</p>
+      <p id="air-quality">Air Quality Index: --/100 (--)</p>
+    </section>
+
+    <div class="outfit-recommendations">
+      <h2>Outfit Recommendations</h2>
+      <div class="weather-info">
+        <span id="current-temp"></span>
+        <span id="current-condition"></span>
+      </div>
+      <ul class="outfit-list" id="outfit-recommendations">
+        <!-- Outfit recommendations will be populated here -->
+      </ul>
+    </div>
+
+    <div class="button-container">
+      <button class="button" onclick="window.open('event-alerts')">Event-Based Alerts</button>
+      <button class="button" onclick="window.open('route-updates')">Route Weather Updates</button>
+    </div>
+
+    <section class="weekly-forecast">
+      <h2>Weekly Forecast</h2>
+      <div class="forecast-buttons" id="forecastButtons">
+        <!-- Forecast buttons will be generated by JS -->
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const backendUrl = 'http://localhost:8000/weather/';
+    const forecastUrl = 'http://localhost:8000/forecast/';
+
+    window.onload = () => {
+      fetchWeather('Mumbai'); // Default city
+      fetchForecast('Mumbai'); // Load forecast
+    };
+
+    function handleSearch(event) {
+      event.preventDefault();
+      const city = document.getElementById('searchInput').value.trim();
+      if (city) {
+        fetchWeather(city);
+        fetchForecast(city);
+      }
+    }
+
+    async function fetchWeather(city) {
+      try {
+        const response = await fetch(`${backendUrl}${city}`);
+        const data = await response.json();
+        
+        document.getElementById('city-name').textContent = data.city;
+        document.getElementById('temperature').textContent = `Temperature: ${data.temperature}°C`;
+        document.getElementById('description').textContent = data.description;
+        document.getElementById('humidity').textContent = `Humidity: ${data.humidity}%`;
+        document.getElementById('wind-speed').textContent = `Wind: ${data.wind_speed} m/s`;
+        document.getElementById('pressure').textContent = `Pressure: ${data.pressure} hPa`;
+        document.getElementById('air-quality').textContent = `Air Quality Index: ${data.aqi || '--'}/100 (${data.aqi_description || '--'})`;
+        await updateOutfitRecommendations(city);
+      } catch (error) {
+        document.getElementById('city-name').textContent = "City not found";
+        document.getElementById('temperature').textContent = "--°C";
+        document.getElementById('description').textContent = "Try another city.";
+        document.getElementById('humidity').textContent = "Humidity: --%";
+        document.getElementById('wind-speed').textContent = "Wind: -- m/s";
+        document.getElementById('pressure').textContent = "Pressure: -- hPa";
+        document.getElementById('air-quality').textContent = "Air Quality Index: --/100 (--)";
+      }
+    }
+
+    function fetchForecast(city) {
+      fetch(`${forecastUrl}${city}`)
+        .then(response => {
+          if (!response.ok) throw new Error("Forecast not available");
+          return response.json();
+        })
+        .then(data => {
+          const forecastContainer = document.getElementById("forecastButtons");
+          forecastContainer.innerHTML = "";
+
+          data.forecast.forEach((day, index) => {
+            const button = document.createElement("button");
+            const date = new Date(day.date);
+            const weekdayLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            
+            let label;
+            if (index === 0) label = "Today";
+            else if (index === 1) label = "Tomorrow";
+            else label = weekdayLabels[date.getDay()];
+
+            // Format the date as "Day, Month Date" (e.g., "Monday, Jan 15")
+            const formattedDate = `${weekdayLabels[date.getDay()]}, ${date.toLocaleString('default', { month: 'short' })} ${date.getDate()}`;
+            
+            button.innerHTML = `
+              <strong>${label}</strong> <br>
+              ${formattedDate} <br>
+              <div class="temperature">
+                ${day.temperature}°C
+              </div>
+              <div class="weather-description">
+                ${day.description}
+              </div>
+              <div class="weather-details">
+                Humidity: ${day.humidity}% <br>
+                Wind: ${day.wind_speed} m/s
+              </div>
+            `;
+            forecastContainer.appendChild(button);
+          });
+        })
+        .catch(error => {
+          console.error("Error fetching forecast:", error);
+          generateForecastButtons(); // Fallback to dummy data
+        });
+    }
+
+    function openSettings() {
+      window.open('settings');
+    }
+
+    // Fallback function with dummy data
+    function generateForecastButtons() {
+      const weekdayLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const forecastContainer = document.getElementById("forecastButtons");
+      forecastContainer.innerHTML = "";
+
+      const today = new Date();
+      const weatherConditions = [
+        "clear sky", "few clouds", "scattered clouds", "broken clouds", 
+        "shower rain", "rain", "thunderstorm", "snow", "mist"
+      ];
+
+      for (let i = 0; i < 7; i++) {
+        const forecastDate = new Date(today);
+        forecastDate.setDate(today.getDate() + i);
+
+        let label;
+        if (i === 0) label = "Today";
+        else if (i === 1) label = "Tomorrow";
+        else label = weekdayLabels[forecastDate.getDay()];
+
+        const formattedDate = `${weekdayLabels[forecastDate.getDay()]}, ${forecastDate.toLocaleString('default', { month: 'short' })} ${forecastDate.getDate()}`;
+        const temp = 22 + i;
+        const condition = weatherConditions[i % weatherConditions.length];
+        const humidity = 60 + i;
+        const windSpeed = 5 + i;
+
+        const button = document.createElement("button");
+        button.innerHTML = `
+          <strong>${label}</strong> <br>
+          ${formattedDate} <br>
+          <div class="temperature">
+            ${temp}°C
+          </div>
+          <div class="weather-description">
+            ${condition}
+          </div>
+          <div class="weather-details">
+            Humidity: ${humidity}% <br>
+            Wind: ${windSpeed} m/s
+          </div>
+        `;
+        forecastContainer.appendChild(button);
+      }
+    }
+
+    async function updateOutfitRecommendations(city) {
+      try {
+        const response = await fetch(`/outfit-recommendations/${city}`);
+        const data = await response.json();
+        
+        // Update weather info
+        document.getElementById('current-temp').textContent = `Temperature: ${data.temperature}°C`;
+        document.getElementById('current-condition').textContent = `Condition: ${data.weather_condition}`;
+        
+        // Update outfit recommendations
+        const outfitList = document.getElementById('outfit-recommendations');
+        outfitList.innerHTML = '';
+        
+        data.recommendations.forEach(item => {
+          const li = document.createElement('li');
+          li.className = 'outfit-item';
+          li.innerHTML = `<i class="fas fa-check"></i> ${item}`;
+          outfitList.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Error fetching outfit recommendations:', error);
+      }
+    }
+  </script>
+</body>
+</html>
